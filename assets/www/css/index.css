@@ -1,34 +1,27 @@
 *
 {
-    -webkit-touch-callout: none;                /* prevent callout to copy image, etc when tap to hold */
-    -webkit-text-size-adjust: none;             /* prevent webkit from resizing text to fit */
-    -webkit-tap-highlight-color: rgba(0,0,0,0); /* make transparent link selection, adjust last value opacity 0 to 1.0 */
-    -webkit-user-select: none;                  /* prevent copy paste, to allow, change 'none' to 'text' */
-    margin: 0;
-    padding: 0;
+    /* prevent callout to copy image, etc when tap to hold */
+    -webkit-touch-callout: none;
+
+    /* prevent webkit from resizing text to fit */
+    -webkit-text-size-adjust: none;
+
+    /* make transparent link selection, adjust last value opacity 0 to 1.0 */
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+
+    /* prevent copy paste, to allow, change 'none' to 'text' */
+    -webkit-user-select: none;
 }
 
-body
-{
-    font-family:'HelveticaNeue-Light', 'HelveticaNeue', Helvetica, Arial, sans-serif;
-    font-size: 10px;
-    
-    margin:0px;
-    padding:0px;
-}
+/******************************************************************************/
 
-div.page
-{
-	margin: 10px;
-}
-
-div.page div.boards div.player_wrapper
+#boards div.player_wrapper
 {
 	float: left;
     width: 50%;
 }
 
-div.page div.boards div.player
+#boards div.player_wrapper div.player
 {
 	margin: 5px;
 	padding: 5px;

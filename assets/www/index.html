@@ -1,73 +1,48 @@
 <!DOCTYPE html>
-<!--
-    Licensed to the Apache Software Foundation (ASF) under one
-    or more contributor license agreements.  See the NOTICE file
-    distributed with this work for additional information
-    regarding copyright ownership.  The ASF licenses this file
-    to you under the Apache License, Version 2.0 (the
-    "License"); you may not use this file except in compliance
-    with the License.  You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-    Unless required by applicable law or agreed to in writing,
-    software distributed under the License is distributed on an
-    "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-     KIND, either express or implied.  See the License for the
-    specific language governing permissions and limitations
-    under the License.
--->
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
         <meta name="format-detection" content="telephone=no" />
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+
         <link rel="stylesheet" type="text/css" href="css/index.css" />
         <link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.css" />
+
 		<script src="http://code.jquery.com/jquery-1.8.2.min.js"></script>
 		<script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
+
         <title>Life Counter</title>
     </head>
     <body>
-    	<div class="page">
-			<a href="#new_game" data-role="button" data-rel="popup" data-mini="true" data-position-to="window">New Game</a>
+    	<div data-role="page" id="home">
+            <a href="#new_game" data-role="button" data-rel="dialog">New Game</a>
 			
-			<div class="boards">
+			<div id="boards">
 			</div>
 		</div>
 		
-		<div id="new_game" data-role="popup">
-			<h1>Number of Players</h1>
-			<div data-role="controlgroup">
-				<button data-mini="true" value=2>2 Players</button>
-				<button data-mini="true" value=3>3 Players</button>
-				<button data-mini="true" value=4>4 Players</button>
-			</div>
-		</div>
+        <div data-role="page" id="new_game">
+            <div data-role="header">
+                <h1>New Game Dialog</h1>
+            </div>
+
+            <div data-role="content">	
+                <div data-role="controlgroup">
+                    <button data-mini="true" value=2>2 Players</button>
+                    <button data-mini="true" value=3>3 Players</button>
+                    <button data-mini="true" value=4>4 Players</button>
+                </div>
+            </div>
+
+            <div data-role="footer">
+                <h4>Page Footer</h4>
+            </div>
+        </div>
     	
         <script type="text/javascript" src="cordova-2.1.0.js"></script>
-        <script id="player_template" type="text/x-jquery-tmpl">
-            
-        </script>
-        <script type="text/javascript">
-        function player_template (map)
-        {
-        	return $('<div class="player_wrapper"><div class="player"><h1>'+map.name+'</h1><h2>'+map.life+'</h2><p>Some other text.</p></div></div>');
-        }
-        
-       	$(document).bind('pageinit', function () {
-       		$("#new_game button").bind("click", function () {
-       			$("#new_game").popup("close");
-       			var players = parseInt($(this).attr("value"));
-           		
-           		$(".page .boards").empty();
-           		
-           		for (var i = 0; i < players; i++)
-           		{
-           			player_template({name:"Player "+(i+1), life:40}).appendTo(".page .boards");
-           		}
-           	});
-       	});
-        </script>
+		<!--script type="text/javascript" src="js/Dialog.js"></script-->
+		<script type="text/javascript" src="js/Player.js"></script>
+		<!--script type="text/javascript" src="js/init.js"></script-->
+		<script type="text/javascript" src="js/index.js"></script>
     </body>
 </html>
