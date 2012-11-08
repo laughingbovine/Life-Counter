@@ -2,3 +2,4 @@ local.properties
 Session.vim
 bin/
 .build/
+gen/
