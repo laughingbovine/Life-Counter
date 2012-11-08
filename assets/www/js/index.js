@@ -1,5 +1,39 @@
+// globals
+
 var players;
 var new_game_dialog;
+
+// some essential events
+
+function freeze ()
+{
+    console.log("freezing...");
+
+    localStorage.clear();
+
+    if (players)
+        players.freeze();
+}
+
+function thaw ()
+{
+    console.log("thawing...");
+
+    players = new PlayerList();
+    players.thaw();
+    players.update_interface();
+}
+
+function back ()
+{
+    console.log('back');
+
+    freeze();
+
+    navigator.app.exitApp();
+}
+
+// game logic
 
 function init_new_game_dialog ()
 {
@@ -9,57 +43,47 @@ function init_new_game_dialog ()
 
     new_game_dialog.on('create', function () {
         this.$dialog.find('button').on('click', function () {
+            var old_players = players;
             var num_players = parseInt($(this).attr("value"));
-            
-            $("#page #boards").empty();
-            players = new Array();
 
-            for (var i = 0; i < num_players; i++)
-            {
-                var player = new Player("Player "+(i+1));
+            players = new PlayerList();
 
-                players.push(player);
+            players.new_game(num_players, old_players);
 
-                $("#page #boards").append(player.construct_interface());
-            }
+            players.update_interface();
 
             new_game_dialog.hide();
         });
     });
 
     $('button._new_game').on('click', function () { 
-        //navigator.notification.alert(
-        //    'You are the winner!',  // message
-        //    function () {},         // callback
-        //    'Game Over',            // title
-        //    'Done'                  // buttonName
-        //);
-
         new_game_dialog.show();
     });
 }
 
-function index ()
-{
-    init_new_game_dialog();
+// starting point
 
-    //$("#new_game").on('click', function () {
-    //    var num_players = parseInt($(this).attr("value"));
-    //    
-    //    $("#home #boards").empty();
-    //    players = new Array();
+document.addEventListener(
+    'deviceready',
+    function () {
+        console.log("ready");
 
-    //    for (var i = 0; i < num_players; i++)
-    //    {
-    //        var player = new Player("Player "+(i+1));
+        // some blanket stuff to make things easier
+        $('button').on('vmousedown', function () { $(this).addClass("down"); });
+        $('button').on('vmouseup', function () { $(this).removeClass("down"); });
 
-    //        players.push(player);
+        //$('input').on('focus', function () { this.select(); });
 
-    //        $("#home #boards").append(player.construct_interface());
-    //    }
+        // handle freeze, thaw, and back
+        document.addEventListener('pause', freeze, false);
+        document.addEventListener('resume', thaw, false);
+        document.addEventListener('backbutton', back, false);
 
-    //    $('#new_game').dialog('close');
-    //});
-}
+        // init new game dialog =)
+        init_new_game_dialog();
 
-$(document).on('ready', index);
+        // thaw last session
+        thaw();
+    },
+    false
+);

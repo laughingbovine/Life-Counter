@@ -20,6 +20,7 @@
 package com.laughingbovine.cordova;
 
 import android.app.Activity;
+import android.view.View;
 import android.os.Bundle;
 import org.apache.cordova.*;
 
@@ -30,6 +31,13 @@ public class Life extends DroidGap
     {
         super.onCreate(savedInstanceState);
         super.loadUrl("file:///android_asset/www/index.html");
+
+        // hack to disable text selection on some android devices (like my Galaxy S2)
+        super.appView.setOnLongClickListener(new View.OnLongClickListener() {
+            public boolean onLongClick(View v) {
+                return true;
+            }
+        });
     }
 }
 

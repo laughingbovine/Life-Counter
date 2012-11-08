@@ -47,10 +47,8 @@
 
     <uses-sdk android:minSdkVersion="7" android:targetSdkVersion="7" />
 
-    <application android:icon="@drawable/icon" android:label="@string/app_name"
-        android:debuggable="true">
-        <activity android:name="Life" android:label="@string/app_name">
-                <!--  android:configChanges="orientation|keyboardHidden|keyboard|screenSize|locale" -->
+    <application android:icon="@drawable/icon" android:label="@string/app_name" android:debuggable="true">
+        <activity android:name="Life" android:label="@string/app_name" android:configChanges="orientation|keyboardHidden|keyboard|locale">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

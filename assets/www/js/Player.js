@@ -3,16 +3,46 @@ function Player (name)
     this.name       = name;
     this.life       = 40;
     this.poison     = 0;
-    this.commander  = 'commander';
-    this.history    = 'history';
+    this.commander  = null;
+    this.history    = null;
+
+    this.player_list = null;
 
     this.$interface = null;
 
     this.change_name_dialog = null;
     this.change_life_spinner = null;
+    this.change_poison_spinner = null;
+}
+
+// freeze/thaw (to and from a JSON object)
+
+Player.prototype.freeze = function ()
+{
+    return {
+        'name'      : this.name,
+        'life'      : this.life,
+        'poison'    : this.poison,
+        'commander' : this.commander,
+        'history'   : this.history
+    }
+}
+
+Player.prototype.thaw = function (icicle)
+{
+    this.name       = icicle.name;
+    this.life       = icicle.life;
+    this.poison     = icicle.poison;
+    this.commander  = icicle.commander;
+    this.history    = icicle.history;
 }
 
 // accessors
+
+Player.prototype.set_player_list = function (player_list)
+{
+    this.player_list = player_list;
+}
 
 Player.prototype.delta_life = function (delta)
 {
@@ -36,6 +66,14 @@ Player.prototype.set_name = function (new_name)
 
     if (this.$interface)
         this.$interface.find('div.name').text(this.name);
+}
+
+Player.prototype.update_commander_names = function ()
+{
+    if (this.$interface)
+    {
+        for (var i = 0; i < this.commander.length; i++)
+    }
 }
 
 // dialogs
@@ -112,17 +150,28 @@ Player.prototype.construct_interface = function ()
     var $history    = $('<div class="history"></div>');
 
     // actual ui stuff
-        // load data
+        // load data, init dialogs
         $name.text(this.name);
-        $life.text(this.life);
-        $poison.text(this.poison);
-        $commander.text(this.commander);
-        $history.text(this.history);
-
-        // change name dialog
         this.init_change_name_dialog($name);
+
+        $life.text(this.life);
         this.init_change_life_spinner($life);
+
+        $poison.text(this.poison);
         this.init_change_poison_spinner($poison);
+
+        //$commander.text(this.commander);
+        this.commander = new Array();
+        for (var i = 0; i < this.player_list.the_players.length; i++)
+        {
+            var classname = 'player'+i;
+
+            this.commander.push(0);
+
+            $commander.append($('<div class="name">'+this.player_list.the_players[i].name+'</div><div class="damage">'+this.commander[i]+'</div>'));
+        }
+
+        $history.text(this.history);
 
     // glue and return
     this.$interface = $('<div class="player_wrapper"></div>').append(
@@ -139,3 +188,22 @@ Player.prototype.construct_interface = function ()
 
     return this.$interface;
 }
+
+Player.prototype.destruct_interface = function ()
+{
+    if (this.$interface)
+    {
+        this.$interface.remove();
+        this.$interface = null;
+    }
+
+    if (this.change_name_dialog)
+        this.change_name_dialog.destroy();
+
+    if (this.change_life_spinner)
+        this.change_life_spinner.destroy();
+
+    if (this.change_poison_spinner)
+        this.change_poison_spinner.destroy();
+}
+

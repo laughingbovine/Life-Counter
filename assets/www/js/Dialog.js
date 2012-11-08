@@ -226,7 +226,7 @@ Dialog.prototype.Spinner = function ($trigger, show_callback, spin_callback, fin
         show_callback.call(self);
     });
 
-    $trigger.on('vmousedown', function () {
+    $trigger.on('taphold', function (e) {
         // show the dialog
         self.show();
 
@@ -255,6 +255,7 @@ Dialog.prototype.AdditionSpinner = function ($trigger, callback)
 
     // change the backdrop so that it's 100% transparent instead of opaque
     // TODO: make it only 50% transparent?
+    // TODO: maybe have a background that suggests spinning?
     self.on('create', function () {
         self.$backdrop.css('background-color', 'transparent');
     });
@@ -300,7 +301,7 @@ Dialog.prototype.AdditionSpinner = function ($trigger, callback)
         },
         // finally
         function () {
-            callback.call(this, change);
+            callback.call(self, change);
         }
     );
 }

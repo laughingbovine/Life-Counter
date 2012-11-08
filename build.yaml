@@ -5,17 +5,30 @@ files:
 
 targets:
     default:
-        also:
-          - java
-          - install
+        build_on_host:
+            'dyn-128-59-30-152.dyn.columbia.edu':
+              - java_debug
+              - install_debug
+            'iCow2.local':
+              - java_release
+              - install_release
 
-    java:
+    java_release:
         src:
           - 'ant release && cp bin/Life-release-unsigned.apk bin/Life.apk && jarsigner -verbose -sigalg MD5withRSA -digestalg SHA1 -keystore /Users/geoff/Documents/projects2/android/keys/dev.keystore -storepass power64 bin/Life.apk dev'
 
-    install: 
+    install_release: 
         src:
           - 'perl /Users/geoff/Documents/projects2/android/bin/deploy_to_devices bin/Life.apk'
+
+    java_debug:
+        src:
+          - 'ant debug'
+
+    install_debug: 
+        src:
+          - 'adb install -r bin/Life-debug.apk'
+          - 'adb shell am start -n com.laughingbovine.cordova/com.laughingbovine.cordova.Life'
 
     push:
         deploy:
