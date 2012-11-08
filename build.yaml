@@ -1,0 +1,23 @@
+build_basedir: .build/
+
+files:
+  - 'bin/Life.apk' : 'Life.apk'
+
+targets:
+    default:
+        also:
+          - java
+          - install
+
+    java:
+        src:
+          - 'ant release && cp bin/Life-release-unsigned.apk bin/Life.apk && jarsigner -verbose -sigalg MD5withRSA -digestalg SHA1 -keystore /Users/geoff/Documents/projects2/android/keys/dev.keystore -storepass power64 bin/Life.apk dev'
+
+    install: 
+        src:
+          - 'perl /Users/geoff/Documents/projects2/android/bin/deploy_to_devices bin/Life.apk'
+
+    push:
+        deploy:
+            server: 'geoffreyalanschwartz.com'
+            dir:    '~/public_html/'

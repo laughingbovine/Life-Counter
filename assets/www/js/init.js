@@ -1,8 +1,10 @@
 function init ()
 {
-    //// some blanket stuff to make things easier
-    //$('button').on('vmousedown', function () { console.log('down'); $(this).addClass("down"); });
-    //$('button').on('vmouseup', function () { console.log('up'); $(this).removeClass("down"); });
+    // some blanket stuff to make things easier
+    $('button').on('vmousedown', function () { $(this).addClass("down"); });
+    $('button').on('vmouseup', function () { $(this).removeClass("down"); });
+
+    //$('input').on('focus', function () { this.select(); });
 }
 
-$(document).on('pageinit', init);
+$(document).on('ready', init);
