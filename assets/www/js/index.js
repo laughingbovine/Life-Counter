@@ -7,8 +7,6 @@ var new_game_dialog;
 
 function freeze ()
 {
-    console.log('freezing...');
-
     localStorage.clear();
 
     if (players)
@@ -17,8 +15,6 @@ function freeze ()
 
 function thaw ()
 {
-    console.log('thawing...');
-
     players = new PlayerList();
     players.thaw();
     players.update_interface();
@@ -26,8 +22,6 @@ function thaw ()
 
 function back ()
 {
-    console.log('back');
-
     freeze();
 
     navigator.app.exitApp();

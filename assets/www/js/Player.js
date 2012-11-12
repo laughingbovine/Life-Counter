@@ -3,7 +3,7 @@ function Player (name)
     this.name       = name;
     this.life       = 40;
     this.poison     = 0;
-    this.commander  = null;
+    this.commander  = new Array();
     //this.history    = null;
 
     this.player_list = null;
@@ -16,44 +16,33 @@ function Player (name)
     this.change_commander_damage_spinner = null;
 }
 
-// freeze/thaw (to and from a JSON object)
-
-Player.prototype.freeze = function ()
+Player.prototype.new_game = function (num_players, player_list)
 {
-    var icicle = {
-        'name'      : this.name,
-        'life'      : this.life,
-        'poison'    : this.poison,
-        //'history'   : this.history
-    };
+    //console.log('Player::new_game()');
 
-    for (var i = 0; i < this.commander.length; i++)
-        icicle['commander'+i] = this.commander[i];
+    this.player_list = player_list;
+
+    for (var i = 0; i < num_players; i++)
+        this.commander.push(0);
 }
 
-Player.prototype.thaw = function (icicle)
+Player.prototype.thaw = function (icicle, player_list)
 {
-    console.log('thaw1');
+    this.player_list = player_list;
 
     this.name       = icicle.name;
-    this.life       = icicle.life;
-    this.poison     = icicle.poison;
+    this.life       = parseInt(icicle.life);
+    this.poison     = parseInt(icicle.poison);
     //this.history    = icicle.history;
-
-    console.log('thaw2');
-
-    this.commander = [];
-
-    console.log('thaw3');
 
     var i = 0;
     while (true)
     {
-        console.log('thaw4');
-
-        if (icicle['commander'+i])
+        if (typeof icicle['commander'+i] != 'undefined')
         {
             this.commander.push(parseInt(icicle['commander'+i]));
+
+            //console.log('thawing commander '+i+' damage: '+this.commander[i]);
 
             i++;
         }
@@ -62,16 +51,30 @@ Player.prototype.thaw = function (icicle)
             break;
         }
     }
+}
 
-    console.log('thaw5');
+// couterpart to thaw()
+
+Player.prototype.freeze = function ()
+{
+    var icicle = {
+        'name'      : this.name,
+        'life'      : this.life,
+        'poison'    : this.poison
+        //'history'   : this.history
+    };
+
+    for (var i = 0; i < this.commander.length; i++)
+    {
+        //console.log('freezing commander '+i+', damage at '+this.commander[i]);
+
+        icicle['commander'+i] = this.commander[i];
+    }
+
+    return icicle;
 }
 
 // accessors
-
-Player.prototype.set_player_list = function (player_list)
-{
-    this.player_list = player_list;
-}
 
 Player.prototype.delta_life = function (delta)
 {
@@ -231,12 +234,8 @@ Player.prototype.construct_interface = function ()
         $poison.text(this.poison);
         this.init_change_poison_spinner($poison);
 
-        //$commander.text(this.commander);
-        this.commander = new Array();
         for (var i = 0; i < this.player_list.the_players.length; i++)
         {
-            this.commander.push(0);
-
             var $commander_wrapper = $('<div class="commander" index="'+i+'"></div>');
             var $commander_name = $('<div class="name">'+this.player_list.the_players[i].name+'</div>');
             var $commander_damage = $('<div class="damage">'+this.commander[i]+'</div>');

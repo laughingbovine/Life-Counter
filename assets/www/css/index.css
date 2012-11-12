@@ -176,6 +176,12 @@ div#page div#boards div.player_wrapper div.player div.commander_damage
 div#page div#boards div.player_wrapper div.player div.commander_damage div.commander
 {
     clear: both;
+
+    padding: 5px 0;
+
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.2em;
 }
 
 div#page div#boards div.player_wrapper div.player div.commander_damage div.commander.down
@@ -187,12 +193,6 @@ div#page div#boards div.player_wrapper div.player div.commander_damage div.comma
 div#page div#boards div.player_wrapper div.player div.commander_damage div.commander div.name
 {
     float: left;
-
-    padding: 0;
-
-    text-align: left;
-    font-weight: normal;
-    font-size: 1em;
 }
 
 div#page div#boards div.player_wrapper div.player div.commander_damage div.commander div.damage

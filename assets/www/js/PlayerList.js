@@ -10,6 +10,8 @@ function PlayerList ()
 
 PlayerList.prototype.new_game = function (num_players, old_list)
 {
+    //console.log('PlayerList::new_game()');
+
     if (old_list)
         old_list.end_game();
 
@@ -17,13 +19,17 @@ PlayerList.prototype.new_game = function (num_players, old_list)
 
     for (var i = 0; i < num_players; i++)
     {
-        if (old_list && old_list.the_players && old_list.the_players[i]) // maintain old names
-            this.the_players.push(new Player(old_list.the_players[i].name));
-        else
-            this.the_players.push(new Player("Player "+(i+1)));
-    }
+        var p;
 
-    this.link_players_to_player_list();
+        if (old_list && old_list.the_players && old_list.the_players[i]) // maintain old names
+            p = new Player(old_list.the_players[i].name);
+        else
+            p = new Player("Player "+(i+1));
+
+        p.new_game(num_players, this);
+
+        this.the_players.push(p);
+    }
 }
 
 PlayerList.prototype.thaw = function ()
@@ -34,13 +40,18 @@ PlayerList.prototype.thaw = function ()
 
     while (true)
     {
-        var icicle = localStorage.getItem('Life.player.'+i);
+        var key = 'Life.player.'+i;
+        var icicle_string = localStorage.getItem(key);
 
-        if (icicle)
+        //console.log('thawing icicle: (key: '+key+') '+icicle_string);
+
+        if (icicle_string)
         {
-            this.the_players.push(new Player());
+            var p = new Player();
 
-            this.the_players[i].thaw(JSON.parse(icicle));
+            p.thaw(JSON.parse(icicle_string), this);
+
+            this.the_players.push(p);
 
             i++;
         }
@@ -49,16 +60,6 @@ PlayerList.prototype.thaw = function ()
             break;
         }
     }
-
-    this.link_players_to_player_list();
-}
-
-// constructor - part 3 (called from part 2)
-
-PlayerList.prototype.link_players_to_player_list = function ()
-{
-    for (var i = 0; i < this.the_players.length; i++)
-        this.the_players[i].set_player_list(this);
 }
 
 // couterpart to thaw()
@@ -66,7 +67,14 @@ PlayerList.prototype.link_players_to_player_list = function ()
 PlayerList.prototype.freeze = function ()
 {
     for (var i = 0; i < this.the_players.length; i++)
-        localStorage.setItem('Life.player.'+i, JSON.stringify(this.the_players[i].freeze()));
+    {
+        var key = 'Life.player.'+i;
+        var icicle_string = JSON.stringify(this.the_players[i].freeze());
+
+        //console.log('freezing icicle: (key: '+key+') '+icicle_string);
+
+        localStorage.setItem(key, icicle_string);
+    }
 }
 
 // update various parts of the interface (or just the whole thing)
