@@ -6,7 +6,7 @@ function PlayerList ()
 }
 
 // constructor - part 2 (called manually)
-// not really sure how to do this the "correct" way in JS
+// not really sure how to do this (multiple constructors) the "correct" way in JS
 
 PlayerList.prototype.new_game = function (num_players, old_list)
 {
@@ -17,7 +17,7 @@ PlayerList.prototype.new_game = function (num_players, old_list)
 
     for (var i = 0; i < num_players; i++)
     {
-        if (old_list && old_list.the_players && old_list.the_players[i])
+        if (old_list && old_list.the_players && old_list.the_players[i]) // maintain old names
             this.the_players.push(new Player(old_list.the_players[i].name));
         else
             this.the_players.push(new Player("Player "+(i+1)));
@@ -76,7 +76,7 @@ PlayerList.prototype.update_interface = function ()
     for (var i = 0; i < this.the_players.length; i++)
         this.the_players[i].destruct_interface();
 
-    $('#page #boards').empty();
+    $('#page #boards').empty(); // just in case
 
     for (var i = 0; i < this.the_players.length; i++)
         $('#page #boards').append(this.the_players[i].construct_interface());

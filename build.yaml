@@ -1,8 +1,5 @@
 build_basedir: .build/
 
-files:
-  - 'bin/Life.apk' : 'Life.apk'
-
 targets:
     default:
         build_on_host:
@@ -15,11 +12,14 @@ targets:
 
     java_release:
         src:
-          - 'ant release && cp bin/Life-release-unsigned.apk bin/Life.apk && jarsigner -verbose -sigalg MD5withRSA -digestalg SHA1 -keystore /Users/geoff/Documents/projects2/android/keys/dev.keystore -storepass power64 bin/Life.apk dev'
+          - 'ant release'
+          - 'cp bin/Life-release-unsigned.apk bin/Life.apk'
+          - 'jarsigner -verbose -sigalg MD5withRSA -digestalg SHA1 -keystore /Users/geoff/Documents/projects2/android/keys/dev.keystore -storepass power64 bin/Life.apk dev'
 
     install_release: 
         src:
-          - 'perl /Users/geoff/Documents/projects2/android/bin/deploy_to_devices bin/Life.apk'
+          - 'adb install -r bin/Life.apk'
+          - 'adb shell am start -n com.laughingbovine.cordova/com.laughingbovine.cordova.Life'
 
     java_debug:
         src:
@@ -29,8 +29,3 @@ targets:
         src:
           - 'adb install -r bin/Life-debug.apk'
           - 'adb shell am start -n com.laughingbovine.cordova/com.laughingbovine.cordova.Life'
-
-    push:
-        deploy:
-            server: 'geoffreyalanschwartz.com'
-            dir:    '~/public_html/'

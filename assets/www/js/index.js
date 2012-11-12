@@ -7,7 +7,7 @@ var new_game_dialog;
 
 function freeze ()
 {
-    console.log("freezing...");
+    console.log('freezing...');
 
     localStorage.clear();
 
@@ -17,7 +17,7 @@ function freeze ()
 
 function thaw ()
 {
-    console.log("thawing...");
+    console.log('thawing...');
 
     players = new PlayerList();
     players.thaw();
@@ -43,16 +43,23 @@ function init_new_game_dialog ()
 
     new_game_dialog.on('create', function () {
         this.$dialog.find('button').on('click', function () {
-            var old_players = players;
-            var num_players = parseInt($(this).attr("value"));
+            if ($(this).attr('value') == 'cancel')
+            {
+                new_game_dialog.hide();
+            }
+            else
+            {
+                var old_players = players;
+                var num_players = parseInt($(this).attr('value'));
 
-            players = new PlayerList();
+                players = new PlayerList();
 
-            players.new_game(num_players, old_players);
+                players.new_game(num_players, old_players);
 
-            players.update_interface();
+                players.update_interface();
 
-            new_game_dialog.hide();
+                new_game_dialog.hide();
+            }
         });
     });
 
@@ -66,11 +73,11 @@ function init_new_game_dialog ()
 document.addEventListener(
     'deviceready',
     function () {
-        console.log("ready");
+        console.log('ready');
 
         // some blanket stuff to make things easier
-        $('button').on('vmousedown', function () { $(this).addClass("down"); });
-        $('button').on('vmouseup', function () { $(this).removeClass("down"); });
+        $('button').on('vmousedown', function () { $(this).addClass('down'); });
+        $('button').on('vmouseup', function () { $(this).removeClass('down'); });
 
         //$('input').on('focus', function () { this.select(); });
 

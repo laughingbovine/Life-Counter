@@ -4,7 +4,7 @@ function Player (name)
     this.life       = 40;
     this.poison     = 0;
     this.commander  = null;
-    this.history    = null;
+    //this.history    = null;
 
     this.player_list = null;
 
@@ -13,28 +13,57 @@ function Player (name)
     this.change_name_dialog = null;
     this.change_life_spinner = null;
     this.change_poison_spinner = null;
+    this.change_commander_damage_spinner = null;
 }
 
 // freeze/thaw (to and from a JSON object)
 
 Player.prototype.freeze = function ()
 {
-    return {
+    var icicle = {
         'name'      : this.name,
         'life'      : this.life,
         'poison'    : this.poison,
-        'commander' : this.commander,
-        'history'   : this.history
-    }
+        //'history'   : this.history
+    };
+
+    for (var i = 0; i < this.commander.length; i++)
+        icicle['commander'+i] = this.commander[i];
 }
 
 Player.prototype.thaw = function (icicle)
 {
+    console.log('thaw1');
+
     this.name       = icicle.name;
     this.life       = icicle.life;
     this.poison     = icicle.poison;
-    this.commander  = icicle.commander;
-    this.history    = icicle.history;
+    //this.history    = icicle.history;
+
+    console.log('thaw2');
+
+    this.commander = [];
+
+    console.log('thaw3');
+
+    var i = 0;
+    while (true)
+    {
+        console.log('thaw4');
+
+        if (icicle['commander'+i])
+        {
+            this.commander.push(parseInt(icicle['commander'+i]));
+
+            i++;
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    console.log('thaw5');
 }
 
 // accessors
@@ -60,43 +89,50 @@ Player.prototype.delta_poison = function (delta)
         this.$interface.find('div.poison').text(this.poison);
 }
 
+Player.prototype.delta_commander = function (index, delta)
+{
+    this.delta_life(-1*delta);
+
+    this.commander[index] += delta;
+
+    if (this.$interface)
+        this.$interface.find('div.commander[index='+index+'] div.damage').text(this.commander[index]);
+}
+
 Player.prototype.set_name = function (new_name)
 {
     this.name = new_name;
 
     if (this.$interface)
-        this.$interface.find('div.name').text(this.name);
+        this.$interface.find('div.player > div.name').text(this.name);
+
+    this.player_list.update_commander_names();
 }
 
 Player.prototype.update_commander_names = function ()
 {
     if (this.$interface)
     {
-        for (var i = 0; i < this.commander.length; i++)
+        var $divs = this.$interface.find('.commander div');
+
+        for (var i = 0; i < this.player_list.the_players.length; i++)
+            $divs.eq(2*i).text(this.player_list.the_players[i].name);
     }
 }
 
 // dialogs
 
-Player.prototype.init_change_life_spinner = function ($el)
+Player.prototype.init_mousedown = function ($el)
 {
-    var self = this;
-
-    self.change_life_spinner = new Dialog();
-    self.change_life_spinner.AdditionSpinner($el, function (delta) { self.delta_life(delta); });
-}
-
-Player.prototype.init_change_poison_spinner = function ($el)
-{
-    var self = this;
-
-    self.change_poison_spinner = new Dialog();
-    self.change_poison_spinner.AdditionSpinner($el, function (delta) { self.delta_poison(delta); });
+    $el.on('vmousedown', function () { $(this).addClass('down'); });
+    $el.on('vmouseup', function () { $(this).removeClass('down'); });
 }
 
 Player.prototype.init_change_name_dialog = function ($el)
 {
     var self = this;
+
+    self.init_mousedown($el);
 
     var d = new Dialog($('div._name_change.template'));
 
@@ -133,6 +169,41 @@ Player.prototype.init_change_name_dialog = function ($el)
     });
 }
 
+Player.prototype.init_change_life_spinner = function ($el)
+{
+    var self = this;
+
+    this.init_mousedown($el);
+
+    self.change_life_spinner = new Dialog();
+    self.change_life_spinner.AdditionSpinner($el, function (delta) { self.delta_life(delta); });
+}
+
+Player.prototype.init_change_poison_spinner = function ($el)
+{
+    var self = this;
+
+    this.init_mousedown($el);
+
+    self.change_poison_spinner = new Dialog();
+    self.change_poison_spinner.AdditionSpinner($el, function (delta) { self.delta_poison(delta); });
+}
+
+Player.prototype.init_change_commander_damage_spinner = function ($commander_wrapper)
+{
+    var self = this;
+
+    self.init_mousedown($commander_wrapper);
+
+    self.change_commander_damage_spinner = new Dialog();
+    self.change_commander_damage_spinner.AdditionSpinner(
+        $commander_wrapper.find('div.damage'),
+        function (delta) {
+            self.delta_commander(parseInt($commander_wrapper.attr('index')), delta);
+        }
+    );
+}
+
 // the interface
 
 Player.prototype.construct_interface = function ()
@@ -146,8 +217,8 @@ Player.prototype.construct_interface = function ()
     var $name       = $('<div class="name"></div>');
     var $life       = $('<div class="life"></div>');
     var $poison     = $('<div class="poison"></div>');
-    var $commander  = $('<div class="commander"></div>');
-    var $history    = $('<div class="history"></div>');
+    var $commander  = $('<div class="commander_damage"></div>');
+    //var $history    = $('<div class="history"></div>');
 
     // actual ui stuff
         // load data, init dialogs
@@ -164,14 +235,20 @@ Player.prototype.construct_interface = function ()
         this.commander = new Array();
         for (var i = 0; i < this.player_list.the_players.length; i++)
         {
-            var classname = 'player'+i;
-
             this.commander.push(0);
 
-            $commander.append($('<div class="name">'+this.player_list.the_players[i].name+'</div><div class="damage">'+this.commander[i]+'</div>'));
+            var $commander_wrapper = $('<div class="commander" index="'+i+'"></div>');
+            var $commander_name = $('<div class="name">'+this.player_list.the_players[i].name+'</div>');
+            var $commander_damage = $('<div class="damage">'+this.commander[i]+'</div>');
+
+            $commander_wrapper.append($commander_name, $commander_damage);
+
+            $commander.append($commander_wrapper);
+
+            this.init_change_commander_damage_spinner($commander_wrapper);
         }
 
-        $history.text(this.history);
+        //$history.text(this.history);
 
     // glue and return
     this.$interface = $('<div class="player_wrapper"></div>').append(
@@ -182,8 +259,8 @@ Player.prototype.construct_interface = function ()
                 $poison
             ),
             $('<div class="clear"></div>'),
-            $commander,
-            $history
+            $commander
+            //$history
     ));
 
     return this.$interface;
@@ -198,12 +275,21 @@ Player.prototype.destruct_interface = function ()
     }
 
     if (this.change_name_dialog)
+    {
         this.change_name_dialog.destroy();
+        this.change_name_dialog = null;
+    }
 
     if (this.change_life_spinner)
+    {
         this.change_life_spinner.destroy();
+        this.change_life_spinner = null;
+    }
 
     if (this.change_poison_spinner)
+    {
         this.change_poison_spinner.destroy();
+        this.change_poison_spinner = null;
+    }
 }
 

@@ -120,6 +120,12 @@ div#page div#boards div.player_wrapper div.player div.name
     font-size: 1.2em;
 }
 
+div#page div#boards div.player_wrapper div.player div.name.down
+{
+    color: white;
+    background-color: blue;
+}
+
 div#page div#boards div.player_wrapper div.player div.life_poison
 {
     clear: both;
@@ -136,6 +142,12 @@ div#page div#boards div.player_wrapper div.player div.life_poison div.life
     font-size: 2.5em;
 }
 
+div#page div#boards div.player_wrapper div.player div.life_poison div.life.down
+{
+    color: white;
+    background-color: blue;
+}
+
 div#page div#boards div.player_wrapper div.player div.life_poison div.poison
 {
     float: right;
@@ -148,10 +160,48 @@ div#page div#boards div.player_wrapper div.player div.life_poison div.poison
     color: green;
 }
 
-div#page div#boards div.player_wrapper div.player div.commander
+div#page div#boards div.player_wrapper div.player div.life_poison div.poison.down
 {
+    color: white;
+    background-color: blue;
 }
 
+div#page div#boards div.player_wrapper div.player div.commander_damage
+{
+    width: 50%;
+
+    margin: 0 auto;
+}
+
+div#page div#boards div.player_wrapper div.player div.commander_damage div.commander
+{
+    clear: both;
+}
+
+div#page div#boards div.player_wrapper div.player div.commander_damage div.commander.down
+{
+    color: white;
+    background-color: blue;
+}
+
+div#page div#boards div.player_wrapper div.player div.commander_damage div.commander div.name
+{
+    float: left;
+
+    padding: 0;
+
+    text-align: left;
+    font-weight: normal;
+    font-size: 1em;
+}
+
+div#page div#boards div.player_wrapper div.player div.commander_damage div.commander div.damage
+{
+    float: right;
+}
+
+/*
 div#page div#boards div.player_wrapper div.player div.history
 {
 }
+*/
